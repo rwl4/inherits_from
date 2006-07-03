@@ -4,3 +4,9 @@ InheritsFrom
 Allows class inheritance with ActiveRecord.
 
 It is very basic at the moment, and might even be fundamentally flawed.
+
+New versions of this plugin may be found here:
+  http://guest@blog.raylucke.com/svn/inherits_from
+  
+Use of this plugin is free, but by using it you agree not to hold me liable for any lost data, money, hair, or body parts. :)
+- Raymond W. Lucke IV (July 3, 2006)
