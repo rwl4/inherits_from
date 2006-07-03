@@ -1,0 +1,6 @@
+InheritsFrom
+============
+
+Allows class inheritance with ActiveRecord.
+
+It is very basic at the moment, and might even be fundamentally flawed.

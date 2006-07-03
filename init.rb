@@ -1,0 +1,1 @@
+require 'inherits_from'

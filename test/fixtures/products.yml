@@ -1,0 +1,10 @@
+agile_book: 
+  name: Agile Web Development with Rails
+  price: 2995
+  type: Book
+  id: 1
+twilight_video: 
+  name: Twilight Zone Season 1
+  price: 8945
+  type: Video
+  id: 2
