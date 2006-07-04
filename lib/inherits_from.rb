@@ -45,7 +45,7 @@ class ActiveRecord::Base
     inherited_column_names.each { |name| alias_associated_attr(association_id, name) }
     
     before_callback = <<-end_eval
-      init_inherited("#{association_id}")
+      init_inherited_assoc("#{association_id}")
       instance_variable_get("@#{association_id}").save
     end_eval
     
