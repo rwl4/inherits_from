@@ -35,14 +35,43 @@ class ActiveRecord::Base
   #   end
   def self.inherits_from(association_id, options = {})
     belongs_to association_id
+    validates_associated association_id
     
     reflection = create_reflection(:belongs_to, association_id, options, self)
     
     association_class = Object.const_get(reflection.class_name)
     
     inherited_column_names = association_class.column_names.reject { |c| self.column_names.grep(c).length > 0 || c == "type"}
+
+    inherited_reflections = association_class.reflections.map { |key,value| key.to_s }
     
-    inherited_column_names.each { |name| alias_associated_attr(association_id, name) }
+    (inherited_column_names + inherited_reflections).each do |name|
+    	define_method(name) do
+    		init_inherited_assoc(association_id)
+    		klass = send(association_id)
+      
+    		klass.send(name)
+    	end
+    
+    	define_method("#{name}=") do |new_value|
+    		init_inherited_assoc(association_id)
+    		klass = send(association_id)
+      
+    		klass.send("#{name}=", new_value)
+    	end
+    end
+    
+    inherited_reflections.each do |name|
+    	%w{ build create }.each do |method|
+    		define_method("#{method}_#{name}") do |*params|
+	    		init_inherited_assoc(association_id)
+    			klass = send(association_id)
+      
+    			klass.send("#{method}_#{name}", *params)
+    		end
+    	end
+    	
+    end
     
     before_callback = <<-end_eval
       init_inherited_assoc("#{association_id}")
@@ -51,23 +80,6 @@ class ActiveRecord::Base
     
     before_create(before_callback)
     before_update(before_callback)
-  end
-  
-  # Creates a proxy accessor method for an inherited object.
-  def self.alias_associated_attr(association_id, name)
-    define_method(name) do
-      init_inherited_assoc(association_id)
-      klass = send(association_id)
-      
-      klass.send(name)
-    end
-    
-    define_method("#{name}=") do |new_value|
-      init_inherited_assoc(association_id)
-      klass = send(association_id)
-      
-      klass.send("#{name}=", new_value)
-    end
   end
   
   private
