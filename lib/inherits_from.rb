@@ -82,12 +82,18 @@ class ActiveRecord::Base
     before_update(before_callback)
   end
   
+  def self.is_a_superclass
+    define_method('subobject') do 
+      subtype.constantize.send("find_by_#{self.class.name.downcase}_id", send("id"))
+  	end
+  end
+  
   private
   # Ensures that there is an association to access, if not, creates one.
   def init_inherited_assoc(association_id)
     if new_record? and instance_variable_get("@#{association_id}").nil?
       send("build_#{association_id}")
-      instance_variable_get("@#{association_id}").type = self.class.to_s
+      instance_variable_get("@#{association_id}").subtype = self.class.to_s
     end
   end
 end
