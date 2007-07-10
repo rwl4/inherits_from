@@ -84,7 +84,7 @@ class ActiveRecord::Base
   
   def self.is_a_superclass
     define_method('subobject') do 
-      subtype.constantize.send("find_by_#{self.class.name.downcase}_id", send("id"))
+      subtype.constantize.send("find_by_#{self.class.name.underscore}_id", send("id"))
   	end
   end
   
